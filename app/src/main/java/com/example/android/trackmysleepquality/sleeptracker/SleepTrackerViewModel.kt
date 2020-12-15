@@ -45,15 +45,16 @@ class SleepTrackerViewModel(
         formatNights(nights, application.resources)
     }
 
-    //TODO (02)  Create three corresponding state variables. Assign them a Transformations
-    //that tests it against the value of tonight.
+    val startButtonVisible = Transformations.map(tonight) { null == it }
+    val stopButtonVisible = Transformations.map(tonight) {null != it}
+    val clearButtonVisible = Transformations.map(nights) { it?.isNotEmpty() }
 
-    //TODO (03) Verify app build and runs without errors.
+    private var _showSnackBarEvent = MutableLiveData<Boolean>()
+    val showSnackBarEvent: LiveData<Boolean> get() = _showSnackBarEvent
 
-    //TODO (04) Using the familiar pattern, create encapsulated showSnackBarEvent variable
-    //and doneShowingSnackbar() fuction.
-
-    //TODO (06) In onClear(), set the value of _showOnSnackbarEvent to true.
+    fun doneShowingSnackBar() {
+        _showSnackBarEvent.value = false
+    }
 
     /**
      * Variable that tells the Fragment to navigate to a specific [SleepQualityFragment]
@@ -162,6 +163,7 @@ class SleepTrackerViewModel(
 
             // And clear tonight since it's no longer in the database
             tonight.value = null
+            _showSnackBarEvent.value = true
         }
     }
 
